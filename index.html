@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legacy Line Charts v18.1 &ndash; Mahtomedi Zephyrs</title>
+    <title>Legacy Line Charts v18.5 &ndash; Mahtomedi Zephyrs</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -1053,7 +1053,7 @@
             const exportObj = {
               _exportInfo: {
                 exportDate: new Date().toISOString(),
-                version: '18.1',
+                version: '18.5',
                 teamName: myTeamSetup.teamName,
                 description: 'Full team configuration for subscriber site build'
               },
@@ -2853,7 +2853,7 @@
             
             const fontScale = isPreview ? 0.3125 : 1;
             const statFontSize = `${8 * fontScale}pt`;
-            const nameFontSize = `${22 * fontScale}pt`;
+            const nameFontSize = `${24 * fontScale}pt`;
             const infoFontSize = statFontSize;
             const pronunciationFontSize = `${12.5 * fontScale}pt`;
             
@@ -2881,10 +2881,19 @@
               }
               
               if (nameRef.current) {
-                const baseMaxSize = 22;
+                const baseMaxSize = 24;
                 const maxNameSize = isPreview ? baseMaxSize * 0.3125 : baseMaxSize;
                 const minNameSize = isPreview ? 3.125 : 10;
-                resizeText(nameRef.current, maxNameSize, minNameSize);
+                // Width-only shrink for name — height is not a constraint
+                const el = nameRef.current;
+                let fontSize = maxNameSize;
+                el.style.fontSize = `${fontSize}pt`;
+                let iterations = 0;
+                while (el.scrollWidth > el.offsetWidth && fontSize > minNameSize && iterations < 100) {
+                  fontSize -= 0.5;
+                  el.style.fontSize = `${fontSize}pt`;
+                  iterations++;
+                }
               }
               
               if (pronunciationRef.current && pronunciation) {
@@ -2925,9 +2934,15 @@
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'flex-start',
-                  borderRight: '2px solid #333',
+                  alignSelf: 'stretch',
+                  borderRight: 'none',
+                  backgroundImage: 'linear-gradient(to bottom, transparent 2px, #333 2px, #333 calc(100% - 2px), transparent calc(100% - 2px))',
+                  backgroundPosition: 'right center',
+                  backgroundSize: '2px 100%',
+                  backgroundRepeat: 'no-repeat',
                   paddingRight: '2px',
-                  paddingBottom: '2px',
+                  paddingBottom: '3px',
+                  marginTop: '-1px',
                   overflow: 'hidden'
                 }}>
                   {/* Number — normal size, original resize behavior */}
@@ -2994,7 +3009,7 @@
                   paddingRight: '4px',
                   display: 'flex',
                   flexDirection: 'column',
-                  justifyContent: 'flex-start',
+                  justifyContent: 'flex-end',
                   gap: '1px'
                 }}>
                   <div 
