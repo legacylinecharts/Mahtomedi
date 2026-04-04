@@ -3852,7 +3852,25 @@
                         </div>
                       </button>
                     )}
-                    <button onClick={() => window.print()} className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 flex items-center gap-1 font-semibold" style={{ lineHeight: '1.1' }}>
+                    <button onClick={() => {
+                      const originalTitle = document.title;
+                      try {
+                        const myTeam = myTeamSetup.teamName || 'My Team';
+                        const opp = opponentData.teamName && opponentData.nickname
+                          ? `${opponentData.teamName} ${opponentData.nickname}`
+                          : opponentData.teamName || 'Opponent';
+                        const gameNum = myTeamData.record.w + myTeamData.record.l + myTeamData.record.t + 1;
+                        const today = new Date();
+                        const mm = String(today.getMonth() + 1).padStart(2, '0');
+                        const dd = String(today.getDate()).padStart(2, '0');
+                        const yyyy = today.getFullYear();
+                        document.title = `LLC ${myTeam} vs ${opp} Game ${gameNum} ${mm}-${dd}-${yyyy}`;
+                      } catch(e) {
+                        console.error('Error setting print title:', e);
+                      }
+                      window.print();
+                      setTimeout(() => { document.title = originalTitle; }, 1000);
+                    }} className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 flex items-center gap-1 font-semibold" style={{ lineHeight: '1.1' }}>
                       <Printer size={16} />
                       <div className="flex flex-col items-start" style={{ fontSize: '10px' }}>
                         <span>PDF</span>
